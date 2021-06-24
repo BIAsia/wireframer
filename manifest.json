@@ -1,0 +1,38 @@
+{
+  "id": "759c2047",
+  "name": "Wireframer",
+  "host": [
+    {
+      "app": "XD",
+      "minVersion": "22.0.0"
+    }
+  ],
+  "version": "0.5.0",
+  "icons": [
+    {
+      "width": 24,
+      "height": 24,
+      "path": "images/icon@1x.png"
+    },
+    {
+      "width": 48,
+      "height": 48,
+      "path": "images/icon@2x.png"
+    }
+  ],
+  "uiEntryPoints": [
+    {
+      "type" : "menu",
+      "label": "wireframe selected",
+      "commandId" : "wireframe"
+    }, {
+      "type" : "menu",
+      "label": "skeleton selected",
+      "commandId" : "skeleton"
+    },{
+      "type" : "menu",
+      "label": "add padding corners",
+      "commandId" : "addCorner"
+    }
+  ]
+}
