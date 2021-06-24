@@ -6,9 +6,11 @@
 
 
 const {Rectangle, Color, Text, SceneNode, Ellipse} = require("scenegraph"); 
-var wireColor = new Color("White");
+const {editDocument} = require("application");
+let panel;
+var wireColor = new Color("Black");
 var cornerColor = new Color("#FFAC3B", 0.3);
-var cornerSize = 24;
+var cornerSize = 16;
 
 function wireframeHandlerFunction(selection) { 
 	let select = selection.items;
@@ -41,6 +43,7 @@ function addCornerHandlerFunction(selection) {
 function createNewCorner(X, Y, cornerRadii,bounds, selection){
 	var newBounds = {x:bounds.x + X, y:bounds.y + Y, width:cornerSize, height:cornerSize};
 	const newElement = new Rectangle();
+    console.log(cornerSize)
 	newElement.width = cornerSize;
 	newElement.height = cornerSize;
     newElement.fill = cornerColor;
@@ -170,10 +173,149 @@ function newCircle(d){
 }
 
 
-module.exports = {
-    commands: {
-        wireframe: wireframeHandlerFunction,
-        skeleton: skeletonHandleFunction,
-        addCorner: addCornerHandlerFunction
+function create(){
+    const html=`
+    <style>
+        div {
+            margin-bottom: 6px;
+        }
+        .wrap { flex-wrap: wrap; }
+        .show {
+            display: block;
+        }
+        .hide {
+            display: none;
+        }
+        #warning{
+            border: 1px dashed #ddd;
+            padding: 10px 10px;
+            margin: 8px;
+            text-align: center;
+        }
+        hr {
+            margin: 12px 0px;
+        }
+        h1 {
+            font-size: 16px;
+            color: #111;
+            margin: 24px 0px;
+        }
+    </style>
+    <body>
+        <div id="warning">
+                <label>请先选择要线框化的对象</label>
+            </div>
+        <form>
+            <span>＊不支持组件，请先取消组合或取消链接</span>
+            
+            <h1>线框化选中组</h1>
+
+            <div class="row warp">
+                <label class="row">
+                    <span>线框颜色</span>
+                    <input type="text" id="wireColor" value="#000" placeholder="线框颜色"/>
+                </label>
+            </div>
+            <button uxp-variant="cta" id="wireframeSelection">线框化</button>
+            <hr class="small" />
+            <h1>标记圆角</h1>
+            <div class="row warp">
+                <label class="row">
+                    <span>标记尺寸</span>
+                    <input type="number" id="cornerSize" value="16" placeholder="标记尺寸"/>
+                </label>
+                <label class="row">
+                    <span>标记颜色</span>
+                    <input type="text" id="cornerColor" value="#FFAC3B" placeholder="标记颜色"/>
+                </label>
+                <label class="row">
+                    <span>标记透明度</span>
+                    <input type="number" id="cornerAlpha" value="0.3" placeholder="标记透明度"/>
+                </label>
+            </div>
+            <button uxp-variant="secondary" id="addCorner">标记</button>
+        </form>
+    </body>
+    `;
+    
+    
+
+    function wireframeSelection(){
+        editDocument(
+            {editLabel: "wireframe selection"},
+            wireframeHandlerFunction
+        )
     }
+
+    function addCorner(){
+        editDocument(
+            {editLabel: "add corners"},
+            addCornerHandlerFunction
+        )
+    }
+
+    // function adjustWireColor(){
+    //     editDocument(
+    //         {editLabel: "adjust wire color"},
+    //         ()=>{wireColor}
+    //     )
+    // }
+
+	panel = document.createElement("div");
+    panel.innerHTML = html;
+
+    const wireColorInput = panel.querySelector("#wireColor");
+    const cornerSizeInput = panel.querySelector("#cornerSize");
+    const cornerColorInput = panel.querySelector("#cornerColor");
+    const cornerAlphaInput = panel.querySelector("#cornerAlpha");
+
+    wireColorInput.addEventListener("input", ()=>{
+        wireColor = new Color(wireColorInput.value);
+    })
+    cornerSizeInput.addEventListener("input", ()=>{
+        cornerSize = parseInt(cornerSizeInput.value, 10);
+    })
+    cornerColorInput.addEventListener("input", ()=>{
+        cornerColor = new Color(cornerColorInput.value, parseInt(255/cornerAlphaInput.value));
+    })
+    cornerAlphaInput.addEventListener("input", ()=>{
+        cornerColor = new Color(cornerColorInput.value, parseInt(255/cornerAlphaInput.value));
+    })
+
+    panel.querySelector("#wireframeSelection").addEventListener("click", wireframeSelection);
+    panel.querySelector("#addCorner").addEventListener("click", addCorner);
+
+	return panel;
+}
+
+function show(event) {
+	if (!panel) event.node.appendChild(create());
+}
+
+function update(selection) {
+    const form = document.querySelector("form"); // [3]
+	const warning = document.querySelector("#warning"); // [4]
+	
+
+	// if (!selection || !(selection.items[0])) { // [5]
+	// 	form.className = "hide";
+	// 	warning.className = "show";
+	// } else {
+		form.className = "show";
+		warning.className = "hide";
+	// }
+}
+
+module.exports = {
+    panels: {
+		showPanel: {
+			show,
+			update
+		}
+	}
+    // commands: {
+    //     wireframe: wireframeHandlerFunction,
+    //     skeleton: skeletonHandleFunction,
+    //     addCorner: addCornerHandlerFunction
+    // }
 };

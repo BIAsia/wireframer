@@ -22,17 +22,8 @@
   ],
   "uiEntryPoints": [
     {
-      "type" : "menu",
-      "label": "wireframe selected",
-      "commandId" : "wireframe"
-    }, {
-      "type" : "menu",
-      "label": "skeleton selected",
-      "commandId" : "skeleton"
-    },{
-      "type" : "menu",
-      "label": "add padding corners",
-      "commandId" : "addCorner"
+      "type" : "panel",
+      "panelId" : "showPanel"
     }
   ]
 }
