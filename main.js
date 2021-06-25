@@ -276,10 +276,10 @@ function create(){
         cornerSize = parseInt(cornerSizeInput.value, 10);
     })
     cornerColorInput.addEventListener("input", ()=>{
-        cornerColor = new Color(cornerColorInput.value, parseInt(255*cornerAlphaInput.value));
+        cornerColor = new Color(cornerColorInput.value, parseInt(255*(1-cornerAlphaInput.value)));
     })
     cornerAlphaInput.addEventListener("input", ()=>{
-        cornerColor = new Color(cornerColorInput.value, parseInt(255*cornerAlphaInput.value));
+        cornerColor = new Color(cornerColorInput.value, parseInt(255*(1-cornerAlphaInput.value)));
     })
 
     panel.querySelector("#wireframeSelection").addEventListener("click", wireframeSelection);
